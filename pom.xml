@@ -51,6 +51,34 @@
     <module>reservation-service</module>
   </modules>
 
+  <build>
+    <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+    <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>kotlin-maven-plugin</artifactId>
+          <groupId>org.jetbrains.kotlin</groupId>
+          <configuration>
+            <args>
+              <arg>-Xjsr305=strict</arg>
+            </args>
+            <compilerPlugins>
+              <plugin>spring</plugin>
+            </compilerPlugins>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.jetbrains.kotlin</groupId>
+              <artifactId>kotlin-maven-allopen</artifactId>
+              <version>${kotlin.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
   <repositories>
     <repository>
       <id>spring-milestones</id>
