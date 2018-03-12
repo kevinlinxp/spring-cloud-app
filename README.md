@@ -9,3 +9,7 @@ brew install rabbitmq
 
 rabbitmq-server
 ```
+
+## Use Hystrix Dashboard
+1. http://localhost:8010/hystrix
+2. Input `http://localhost:9999/actuator/hystrix.stream` and click `Monitor Stream`
