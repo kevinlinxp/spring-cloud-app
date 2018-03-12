@@ -1,8 +1,10 @@
 package com.kevinlinxp.springcloudapp.reservationclient
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy
@@ -23,16 +25,17 @@ import org.springframework.web.client.RestTemplate
 
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableCircuitBreaker
 /**
  * This is an "edge-service" - a service that talks to the other services.
  * There are a couple of different kinds of edge-services
  * <ul>
  *     <li>Micro-proxy. For example, the "ZuulProxy" used below.</li>
- *     <li>API-gateway {@link ReservationApiGatewayRestController}</li>
+ *     <li>API-gateway {@link ReservationApiGatewayRestController}.</li>
  * </ul>
  */
-@EnableZuulProxy
-@EnableBinding(Source::class)
+@EnableZuulProxy // This is our micro-proxy
+@EnableBinding(Source::class) // Besides rest-call, messaging is used by our API-gateway to talk with the other micro-services.
 class ReservationClientApplication {
 
     @LoadBalanced
@@ -53,6 +56,11 @@ class ReservationApiGatewayRestController(
         @Autowired @Output(Source.OUTPUT) val messageChannel: MessageChannel
 ) {
 
+    fun getReservationNamesFallback(): List<String> {
+        return emptyList()
+    }
+
+    @HystrixCommand(fallbackMethod = "getReservationNamesFallback")
     @RequestMapping("/names")
     fun getReservationNames(): List<String> {
 
