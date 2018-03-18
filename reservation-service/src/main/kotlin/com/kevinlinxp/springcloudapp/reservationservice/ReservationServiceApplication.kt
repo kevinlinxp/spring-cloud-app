@@ -11,10 +11,13 @@ import org.springframework.cloud.context.config.annotation.RefreshScope
 import org.springframework.cloud.stream.annotation.EnableBinding
 import org.springframework.cloud.stream.messaging.Sink
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
 import org.springframework.data.rest.core.annotation.RestResource
+import org.springframework.data.rest.core.config.RepositoryRestConfiguration
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter
 import org.springframework.integration.annotation.MessageEndpoint
 import org.springframework.integration.annotation.ServiceActivator
 import org.springframework.web.bind.annotation.RequestMapping
@@ -71,6 +74,14 @@ class MessageRestController {
 
 }
 
+
+@Configuration
+class ExposeIdRepositoryRestConfigurerAdapter : RepositoryRestConfigurerAdapter() {
+    override fun configureRepositoryRestConfiguration(config: RepositoryRestConfiguration?) {
+        config?.exposeIdsFor(Reservation::class.java)
+    }
+}
+
 @RepositoryRestResource
 interface ReservationRepository : JpaRepository<Reservation, Long> {
 
@@ -80,12 +91,11 @@ interface ReservationRepository : JpaRepository<Reservation, Long> {
 
 @Entity
 data class Reservation constructor(
+        @Id @GeneratedValue var id: Long?,
         var reservationName: String?
 ) {
+    // This (ugly) secondary constructor is needed by JPA.
+    constructor() : this(null, null)
 
-    @Id
-    @GeneratedValue
-    var id: Long? = null
-
-    constructor() : this(null)
+    constructor(reservationName: String) : this(null, reservationName)
 }
