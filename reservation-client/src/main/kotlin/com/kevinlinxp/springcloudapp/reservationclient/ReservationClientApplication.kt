@@ -1,5 +1,6 @@
 package com.kevinlinxp.springcloudapp.reservationclient
 
+import brave.sampler.Sampler
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -42,6 +43,11 @@ class ReservationClientApplication {
     @Bean
     fun restTemplate(): RestTemplate {
         return RestTemplate()
+    }
+
+    @Bean
+    fun getSampler(): Sampler {
+        return Sampler.ALWAYS_SAMPLE
     }
 }
 
@@ -87,5 +93,6 @@ class ReservationApiGatewayRestController(
 }
 
 data class Reservation(var id: Long?, var reservationName: String?) {
+    // This (ugly) secondary constructor is needed by JPA.
     constructor() : this(null, null)
 }

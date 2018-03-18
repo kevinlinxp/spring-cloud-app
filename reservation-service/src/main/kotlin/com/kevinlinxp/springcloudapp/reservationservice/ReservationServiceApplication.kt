@@ -1,5 +1,6 @@
 package com.kevinlinxp.springcloudapp.reservationservice
 
+import brave.sampler.Sampler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
@@ -28,10 +29,15 @@ import javax.persistence.Id
 class ReservationServiceApplication {
 
     @Bean
-    internal fun runner(rr: ReservationRepository) = CommandLineRunner {
+    fun runner(rr: ReservationRepository) = CommandLineRunner {
         "Dr. Rod,Dr. Syer,ALL THE COMMUNITY,Josh,Kevin".split(",")
                 .forEach { rr.save(Reservation(it)) }
         rr.findAll().forEach { println(it) }
+    }
+
+    @Bean
+    fun getSampler(): Sampler {
+        return Sampler.ALWAYS_SAMPLE
     }
 }
 
@@ -40,7 +46,7 @@ fun main(args: Array<String>) {
 }
 
 @MessageEndpoint
-internal class MessageReservationReceiver(
+class MessageReservationReceiver(
         @Autowired val reservationRepository: ReservationRepository
 ) {
 
@@ -53,7 +59,7 @@ internal class MessageReservationReceiver(
 
 @RefreshScope
 @RestController
-internal class MessageRestController {
+class MessageRestController {
 
     @Value("\${message}")
     private var message = ""
@@ -66,14 +72,14 @@ internal class MessageRestController {
 }
 
 @RepositoryRestResource
-internal interface ReservationRepository : JpaRepository<Reservation, Long> {
+interface ReservationRepository : JpaRepository<Reservation, Long> {
 
     @RestResource(path = "by-name")
     fun findByReservationName(@Param("rn") rn: String): Collection<Reservation>
 }
 
 @Entity
-internal data class Reservation constructor(
+data class Reservation constructor(
         var reservationName: String?
 ) {
 
