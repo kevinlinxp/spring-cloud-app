@@ -1,0 +1,20 @@
+version: "3"
+
+# A service definition contains configuration that is applied to each container started for that
+# service, much like passing command-line parameters to docker container create. Likewise, network
+# and volume definitions are analogous to docker network create and docker volume create.
+services:
+  cloudapp-config-server:
+    # As with docker container create, options specified in the Dockerfile, such as CMD, EXPOSE,
+    # VOLUME, ENV, are respected by default - you don’t need to specify them again in
+    # docker-compose.yml.
+    build: ./config-server
+    ports:
+      - 8888:8888
+
+  cloudapp-eureka-server:
+    build: ./eureka-server
+    ports:
+      - 8761:8761
+    depends_on:
+      - cloudapp-config-server
