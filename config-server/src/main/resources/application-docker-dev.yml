@@ -8,9 +8,9 @@ spring:
     config:
       server:
         git:
-          uri: ${HOME}/Work/kelin/SpringCloud/spring-cloud-app-config-repo
+          uri: https://github.com/kevinlinxp/spring-cloud-app-config-repo
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:${EUREKASERVER_PORT:8761}/eureka
+      defaultZone: http://cloudapp-eureka-server:${EUREKASERVER_PORT:8761}/eureka
