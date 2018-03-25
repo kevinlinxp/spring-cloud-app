@@ -4,6 +4,12 @@ version: "3"
 # service, much like passing command-line parameters to docker container create. Likewise, network
 # and volume definitions are analogous to docker network create and docker volume create.
 services:
+  cloudapp-rabbitmq-server:
+    image: rabbitmq:3.7.4-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
   cloudapp-config-server:
     # As with docker container create, options specified in the Dockerfile, such as CMD, EXPOSE,
     # VOLUME, ENV, are respected by default - you don’t need to specify them again in
@@ -11,6 +17,8 @@ services:
     build: ./config-server
     ports:
       - 8888:8888
+    depends_on:
+      - cloudapp-rabbitmq-server
 
   cloudapp-eureka-server:
     build: ./eureka-server
@@ -26,17 +34,16 @@ services:
     depends_on:
       - cloudapp-eureka-server
 
-#  cloudapp-reservation-service:
-#    build: ./reservation-service
-#    ports:
-#      - 8000:8000
-#    depends_on:
-#      - cloudapp-eureka-server
-#
-#  cloudapp-reservation-client:
-#    build: ./reservation-client
-#    ports:
-#      - 9999:9999
-#    depends_on:
-#      - cloudapp-reservation-service
-#
+  cloudapp-reservation-service:
+    build: ./reservation-service
+    ports:
+      - 8000:8000
+    depends_on:
+      - cloudapp-eureka-server
+
+  cloudapp-reservation-client:
+    build: ./reservation-client
+    ports:
+      - 9999:9999
+    depends_on:
+      - cloudapp-reservation-service
