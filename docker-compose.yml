@@ -18,3 +18,25 @@ services:
       - 8761:8761
     depends_on:
       - cloudapp-config-server
+
+  cloudapp-hystrix-dashboard:
+    build: ./hystrix-dashboard
+    ports:
+      - 7979:7979
+    depends_on:
+      - cloudapp-eureka-server
+
+#  cloudapp-reservation-service:
+#    build: ./reservation-service
+#    ports:
+#      - 8000:8000
+#    depends_on:
+#      - cloudapp-eureka-server
+#
+#  cloudapp-reservation-client:
+#    build: ./reservation-client
+#    ports:
+#      - 9999:9999
+#    depends_on:
+#      - cloudapp-reservation-service
+#
