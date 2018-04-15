@@ -1,4 +1,5 @@
 #!/bin/bash
+# Deprecated - Use docker-compose in the parent project
 APP_NAME=cloudapp-config-server
 PORT=8888
 LINK=cloudapp-eureka-server
