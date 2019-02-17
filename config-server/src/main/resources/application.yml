@@ -8,7 +8,7 @@ spring:
     config:
       server:
         git:
-          uri: ${HOME}/Work/kelin/SpringCloud/spring-cloud-app-config-repo
+          uri: https://github.com/kevinlinxp/spring-cloud-app-config-repo
 
 eureka:
   client:

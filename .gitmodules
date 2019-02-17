@@ -1,0 +1,3 @@
+[submodule "config-server/config-repo"]
+	path = config-server/config-repo
+	url = git@github.com:kevinlinxp/spring-cloud-app-config-repo.git
